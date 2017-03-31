@@ -1,0 +1,12 @@
+<h3>This is the home Page.</h3>
+
+<div ng-controller="searchFormCtrl">
+<form id="search-form" ng-submit="processSearchForm()">
+  Enter Keywords: <input type="text" name="keywords" ng-model="searchForm.keywords"><br>
+  <button type="submit" class="btn btn-danger">Submit</button>
+</form>
+
+<br>
+<p> {{showKeywords()}} </p>
+
+</div>
