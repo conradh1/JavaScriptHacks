@@ -7,14 +7,25 @@ formApp.config(function($stateProvider, $urlRouterProvider) {
     // HOME STATES AND NESTED VIEWS ========================================
     .state({name: 'home',
 	    url: '/home',
-	    templateUrl: 'home.html',
-	    controller: 'searchFormCtrl'
+	   views: {
+                '': { templateUrl: 'home.html',
+		      controller: 'searchFormCtrl'
+		    },
+		'list': { controller: 'listPeople',
+			   template: '<ul>'+
+				      '<li ng-repeat="contact in contacts">'+
+				      '<a>{{contact.name}}</a>'+
+				      '</li>'+
+				      '</ul>'
+			  }
+            }
     })
 
     .state({name: 'about',
 	    url: '/about',
 	    component: 'about'
     })
+
 
     .state({name: 'list',
 	    url: '/list',
@@ -29,6 +40,17 @@ formApp.config(function($stateProvider, $urlRouterProvider) {
     $urlRouterProvider.otherwise('/home');
 })
 
+
+formApp.controller('listPeople', function($scope, $http) {
+  //$scope.contacts = [{ name: 'Alice' }, { name: 'Bob' }];
+   $scope.contact = null;
+    $http({method: 'GET', url: 'data/providers.json'}).
+        success(function(data, status, headers, config) {
+            $scope.contacts=data;
+        }).error(function(data, status, headers, config) {
+    });
+
+});
 formApp.controller('searchFormCtrl', function($scope, $state, $stateParams) {
     $scope.searchForm = {};
 
@@ -42,7 +64,7 @@ formApp.controller('searchFormCtrl', function($scope, $state, $stateParams) {
 
 
 formApp.component('about', {
-  template:  '<h3> The about page</h3>'
+  template: "<h3>This is the about page</h3>"
 });
 
 
