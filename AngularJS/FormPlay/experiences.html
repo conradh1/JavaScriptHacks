@@ -1,0 +1,10 @@
+<div class="row">
+    <div class="col-sm-4" ng-repeat="experience in $ctrl.experiences">
+      <h4>{{experience.slogan}}</h4>
+      <img src="https://placehold.it/150x80?text=Image" class="img-responsive" style="width:100%" alt="Image">
+      <p class="text-left">Provider: {{experience.name}}</p>
+      <p class="text-left">{{experience.description}}</p>
+      <p class="text-left">Price: {{experience.price | currency  }}</p>
+      <p class="text-left">Email: {{experience.email}}</p>
+    </div>
+</div>

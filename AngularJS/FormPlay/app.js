@@ -11,14 +11,14 @@ formApp.config(function($stateProvider, $urlRouterProvider) {
                 '': { templateUrl: 'home.html',
 		      controller: 'searchFormCtrl'
 		    },
-		'list': { controller: 'listPeople',
-			   template: '<ul>'+
-				      '<li ng-repeat="contact in contacts">'+
-				      '<a>{{contact.name}}</a>'+
-				      '</li>'+
-				      '</ul>'
-			  }
-            }
+		'experiences': { component: 'experiences' }
+            },
+	   resolve: {
+	      experiences: function(ExperienceService) {
+		return ExperienceService.getAllExperiences();
+	      }
+	    }
+
     })
 
     .state({name: 'about',
@@ -27,30 +27,30 @@ formApp.config(function($stateProvider, $urlRouterProvider) {
     })
 
 
-    .state({name: 'list',
-	    url: '/list',
-	    component: 'list',
+    .state({name: 'experiences',
+	    url: '/experiences',
+	    component: 'experiences',
 	    resolve: {
-	      people: function(ListProviderService) {
-		return ListProviderService.getAllProviders();
+	      experiences: function(ExperienceService) {
+		return ExperienceService.getAllExperiences();
 	      }
 	    }
-    });
+    })
 
+    .state({name: 'experiences.experience',
+      url: '/{experienceId}',
+      component: 'experience',
+      resolve: {
+        experience: function(experiences, $stateParams) {
+          return experiences.find(function(experience) {
+            return experience.id === $stateParams.experienceId;
+          });
+        }
+      }
+    })
     $urlRouterProvider.otherwise('/home');
 })
 
-
-formApp.controller('listPeople', function($scope, $http) {
-  //$scope.contacts = [{ name: 'Alice' }, { name: 'Bob' }];
-   $scope.contact = null;
-    $http({method: 'GET', url: 'data/providers.json'}).
-        success(function(data, status, headers, config) {
-            $scope.contacts=data;
-        }).error(function(data, status, headers, config) {
-    });
-
-});
 formApp.controller('searchFormCtrl', function($scope, $state, $stateParams) {
     $scope.searchForm = {};
 
@@ -68,21 +68,21 @@ formApp.component('about', {
 });
 
 
-formApp.service('ListProviderService', function($http) {
+formApp.service('ExperienceService', function($http) {
   var service = {
-    getAllProviders: function() {
-      return $http.get('data/providers.json', { cache: true }).then(function(resp) {
+    getAllExperiences: function() {
+      return $http.get('data/experiences.json', { cache: true }).then(function(resp) {
         return resp.data;
       });
     },
 
     getPerson: function(id) {
-      function personMatchesParam(person) {
-        return person.id === id;
+      function experienceMatchesParam(experience) {
+        return experience.id === id;
       }
 
-      return service.getAllProviders().then(function (people) {
-        return people.find(personMatchesParam)
+      return service.getAllExperiences().then(function (experiences) {
+        return experiences.find(experienceMatchesParam)
       });
     }
   }
@@ -90,22 +90,35 @@ formApp.service('ListProviderService', function($http) {
   return service;
 });
 
-formApp.component('list', {
-  bindings: { people: '<' },
+formApp.component('experiences', {
+  bindings: { experiences: '<' },
 
   template: '<div class="flex-h">' +
-            '  <div class="people">' +
-            '    <h3>Some people:</h3>' +
+            '  <div class="experiences">' +
+            '    <h3>Some experiences:</h3>' +
             '    <ul>' +
-            '      <li ng-repeat="person in $ctrl.people">' +
-            '        <a ui-sref-active="active" ui-sref="people.person({ personId: person.id })">' +
-            '          {{person.name}}' +
+            '      <li ng-repeat="experience in $ctrl.experiences">' +
+            '        <a ui-sref-active="active" ui-sref="experiences.experience({ experienceId: experience.id })">' +
+            '          {{experience.name}}' +
             '        </a>' +
             '      </li>' +
             '    </ul>' +
             '  </div>' +
             '  <ui-view></ui-view>' +
             '</div>'
+});
+
+formApp.component('experience', {
+  bindings: { experience: '<' },
+  template: '<h3>A experience!</h3>' +
+
+            '<div>Name: {{$ctrl.experience.name}}</div>' +
+            '<div>Id: {{$ctrl.experience.id}}</div>' +
+            '<div>Company: {{$ctrl.experience.company}}</div>' +
+            '<div>Email: {{$ctrl.experience.email}}</div>' +
+            '<div>Address: {{$ctrl.experience.address}}</div>' +
+
+            '<button ui-sref="experiences">Close</button>'
 });
 
 
