@@ -4,8 +4,7 @@ formApp.config(function($stateProvider, $urlRouterProvider) {
 
     $stateProvider
 
-    // HOME STATES AND NESTED VIEWS ========================================
-    .state({name: 'home',
+   .state({name: 'home',
 	    url: '/home',
 	   views: {
                 '': { templateUrl: 'home.html',
@@ -20,6 +19,14 @@ formApp.config(function($stateProvider, $urlRouterProvider) {
 	    }
 
     })
+
+
+   .state('search', {
+                url: '/search?query',
+		templateUrl: 'search.html',
+                controller: 'SearchController as searchCtrl',
+                reloadOnSearch: false
+            })
 
     .state({name: 'about',
 	    url: '/about',
@@ -37,19 +44,34 @@ formApp.config(function($stateProvider, $urlRouterProvider) {
 	    }
     })
 
-    .state({name: 'experiences.experience',
-      url: '/{experienceId}',
+    .state({name: 'experience',
+      url: '/experience/{experienceId}',
       component: 'experience',
       resolve: {
-        experience: function(experiences, $stateParams) {
-          return experiences.find(function(experience) {
-            return experience.id === $stateParams.experienceId;
-          });
+        experience: function(ExperienceService, $stateParams) {
+          return ExperienceService.getPerson($stateParams.experienceId);
         }
       }
+
     })
     $urlRouterProvider.otherwise('/home');
 })
+
+formApp.controller('searchCtrl', function($scope, $state, $stateParams) {
+    $scope.searchForm = {};
+
+    $scope.search = function() {
+      $stateParams.query = vm.query;
+      //searchService.search(vm.query);
+      $location.search('query', vm.query);
+    };
+    // function to process the form
+    $scope.processSearchForm = function() {
+        $scope.showKeywords = function() {
+	  return "Results: " + $scope.searchForm.keywords;
+	};
+    };
+});
 
 formApp.controller('searchFormCtrl', function($scope, $state, $stateParams) {
     $scope.searchForm = {};
@@ -71,7 +93,7 @@ formApp.component('about', {
 formApp.service('ExperienceService', function($http) {
   var service = {
     getAllExperiences: function() {
-      return $http.get('data/experiences.json', { cache: true }).then(function(resp) {
+      return $http.get('data/experiences.json', { cache: false }).then(function(resp) {
         return resp.data;
       });
     },
@@ -98,7 +120,7 @@ formApp.component('experiences', {
             '    <h3>Some experiences:</h3>' +
             '    <ul>' +
             '      <li ng-repeat="experience in $ctrl.experiences">' +
-            '        <a ui-sref-active="active" ui-sref="experiences.experience({ experienceId: experience.id })">' +
+            '        <a ui-sref-active="active" ui-sref="experience({ experienceId: experience.id })">' +
             '          {{experience.name}}' +
             '        </a>' +
             '      </li>' +
@@ -118,7 +140,7 @@ formApp.component('experience', {
             '<div>Email: {{$ctrl.experience.email}}</div>' +
             '<div>Address: {{$ctrl.experience.address}}</div>' +
 
-            '<button ui-sref="experiences">Close</button>'
+            '<button ui-sref="home">Close</button>'
 });
 
 

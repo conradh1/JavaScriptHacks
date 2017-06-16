@@ -1,10 +1,6 @@
-<h3>This is the home Page.</h3>
+<h3>Search Page</h3>
 
 <div ng-controller="searchFormCtrl">
-<form id="search-form" ng-submit="searchCtrl.search()">
-  Enter Keywords: <input type="text" name="query" ng-model="searchCtrl.query"><br>
-  <button type="submit" class="btn btn-danger">Submit</button>
-</form>
 
 <form name="search-form" ng-submit="searchCtrl.search()">
                             <md-input-container>
@@ -15,5 +11,4 @@
 
 <br>
 <p> {{showKeywords()}} </p>
-
 </div>
