@@ -22,7 +22,7 @@ formApp.config(function($stateProvider, $urlRouterProvider) {
 
 
    .state('search', {
-                url: '/search?query',
+                url: '/search',
 		templateUrl: 'search.html',
                 controller: 'SearchController as searchCtrl',
                 reloadOnSearch: false
@@ -45,7 +45,7 @@ formApp.config(function($stateProvider, $urlRouterProvider) {
     })
 
     .state({name: 'experience',
-      url: '/experience/{experienceId}',
+      url: '/experience/experienceId={experienceId}',
       component: 'experience',
       resolve: {
         experience: function(ExperienceService, $stateParams) {

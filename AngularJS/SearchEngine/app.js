@@ -11,19 +11,19 @@ searchApp.config(function($stateProvider, $urlRouterProvider) {
                 reloadOnSearch: false
             })
 
-    $urlRouterProvider.otherwise('/search');
+    $urlRouterProvider.otherwise('/');
 })
 
 searchApp.controller('searchCtrl', function($scope, $state, $stateParams) {
-    $scope.searchForm = {};
 
-	console.log("hit controller");
+	console.log("Called controller!");
 
     // function to process the form
-    $scope.processSearchForm = function() {
+    $scope.submit = function() {
 
+		console.log("Called submit!");
         $scope.showKeywords = function() {
-			return "Results: " + $scope.searchForm.keywords;
+			return "Results: " + $scope.keywords;
 		};
     };
 });
