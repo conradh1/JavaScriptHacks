@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular.min.js"></script>
+<script src="//unpkg.com/angular-ui-router@1.0.0-beta.3/release/angular-ui-router.js"></script>
+<script src="app.js"></script>
+<body ng-app="formApp">
+<div class="nav">
+      <a ui-sref="home" ui-sref-active="active">Home</a>
+      <a ui-sref="about" ui-sref-active="active">About</a>
+      <a ui-sref="experiences" ui-sref-active="active">List Experiences</a>
+      <a ui-sref="search" ui-sref-active="active">Search</a>
+</div>
+<!-- views will be injected here -->
+<div class="container">
+    <div ui-view></div>
+    <div ui-view="experiences"></div>
+</div>
+
+</body>
+</html>

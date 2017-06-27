@@ -1,0 +1,68 @@
+<!doctype html>
+<html>
+    <head>
+    </head>
+    <body ng-app="app">
+
+        <div ui-view></div>
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.0/angular.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.2.15/angular-ui-router.min.js"></script>
+
+        <script>
+            var app = angular.module('app', ['ui.router']);
+            app.config(function($stateProvider, $urlRouterProvider) {
+                $stateProvider.state('list', {
+                    url: '/list?page&sort',
+                    controller: 'ListCtrl',
+                    controllerAs: 'list',
+                    template: 'Page: {{ list.page }} Sort: {{ list.sort }}' +
+                        '<button ng-click="list.nextPage()">Next</button>' +
+                        '<button ng-click="list.prevPage()">Prev</button>' +
+                        '<select ng-options="sortOption for sortOption in list.sortOptions" ng-model="list.sort" ng-change="list.sortChanged()"></select>',
+                    params: {
+                        page: {
+                            value: '0',
+                            squash: true
+                        },
+                        sort: {
+                            value: 'upvotes',
+                            squash: true
+                        }
+                    }
+                });
+
+                $urlRouterProvider.otherwise('/list');
+            });
+            app.controller('ListCtrl', function($stateParams, $state) {
+                console.log('This is called only when the controller is reloaded so you should NOT see it called when you change the page/sort!');
+                function updatePage() {}
+                function sortList() {}
+
+                this.page = parseInt($stateParams.page, 10);
+                this.sort = $stateParams.sort;
+                this.sortOptions = ['upvotes', 'date', 'author'];
+
+                sortList();
+                updatePage();
+
+                var self = this;
+                this.nextPage = function() {
+                    self.page++;
+                    updatePage();
+                    $state.go('.', {page: self.page}, {notify: false});
+                };
+                this.prevPage = function() {
+                    if (self.page > 0) {
+                        self.page--;
+                        updatePage();
+                        $state.go('.', {page: self.page}, {notify: false});
+                    }
+                };
+                this.sortChanged = function() {
+                    sortList();
+                    $state.go('.', {sort: self.sort}, {notify: false});
+                };
+            });
+        </script>
+    </body>
+</html>
