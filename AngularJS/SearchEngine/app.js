@@ -19,28 +19,33 @@ searchApp.config(function($stateProvider, $urlRouterProvider) {
    
    .state({name: 'results',
 	    url: '/results/keywords={keywords}',
-          contorller: 'resultsCtrl',
-          templateUrl: 'results.html'
+          templateUrl: 'results.html',
+		  controller: 'resultsCtrl'
     })
 
 
-    $urlRouterProvider.otherwise('/');
+    $urlRouterProvider.otherwise('/search');
 })
 
 searchApp.controller('searchCtrl', function($scope, $state, $stateParams) {
 
-	console.log("Called controller!");
+	console.log("Called Search controller!");
 
     // function to process the form
     $scope.submit = function() {
-
-        console.log("Called submit!");
-        //$state.go('results', {keywords: $scope.keywords});
-        $state.go('.', {keywords: $scope.keywords});
-        $scope.showKeywords = function() {
-			return "Results: " + $scope.keywords;
-		};
+        $state.go('results', {keywords: $scope.keywords});
+        //$state.go('.', {keywords: $scope.keywords});
     };
 });
 
 
+searchApp.controller('resultsCtrl', function($scope, $state, $stateParams) {
+
+	console.log("Called Results controller!");
+
+    $scope.keywords = $stateParams.keywords;
+	$scope.showKeywords = function() {
+		console.log("Called Show Keywords");
+		return "Results: " + $scope.keywords;
+	};
+});
